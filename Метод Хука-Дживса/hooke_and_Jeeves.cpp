@@ -4,12 +4,12 @@
 #include <iostream>
 #include <iomanip> 
 
-hooke_and_Jeeves::hooke_and_Jeeves(){};
+hooke_and_Jeeves::hooke_and_Jeeves() {};
 
 /* Rosenbrocks classic parabolic valley ("banana") function */
-double hooke_and_Jeeves::f(double *x, int VARS,  int n)
+double hooke_and_Jeeves::f(double* x, int VARS, int n)
 {
-	double	   a, b, c;
+	double a, b, c;
 	funevals++;
 	a = x[0];
 	b = x[1];
@@ -18,9 +18,9 @@ double hooke_and_Jeeves::f(double *x, int VARS,  int n)
 }
 
 /* given a point, look for a better one nearby, one coord at a time */
-double hooke_and_Jeeves::best_nearby(double *delta, int VARS, double *point, double prevbest, int nvars)
+double hooke_and_Jeeves::best_nearby(double* delta, int VARS, double* point, double prevbest, int nvars)
 {
-	double *z=new double[VARS];
+	double* z = new double[VARS];
 	double minf, ftmp;
 	int i;
 	minf = prevbest;
@@ -47,12 +47,12 @@ double hooke_and_Jeeves::best_nearby(double *delta, int VARS, double *point, dou
 	return (minf);
 }
 
-int hooke_and_Jeeves::hooke(int nvars, double *startpt, int VARS, double *endpt, double rho, double epsilon, int itermax)
+int hooke_and_Jeeves::hooke(int nvars, double* startpt, int VARS, double* endpt, double rho, double epsilon, int itermax)
 {
-	double *delta = new double[VARS];
+	double* delta = new double[VARS];
 	double newf, fbefore, steplength, tmp;
-	double *xbefore = new double[VARS];
-	double *newx=new double[VARS];
+	double* xbefore = new double[VARS];
+	double* newx = new double[VARS];
 	int i, j, keep;
 	int iters, iadj;
 	for (i = 0; i < nvars; i++) {
