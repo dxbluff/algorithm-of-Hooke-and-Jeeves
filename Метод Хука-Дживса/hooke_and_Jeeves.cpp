@@ -7,7 +7,7 @@
 hooke_and_Jeeves::hooke_and_Jeeves(){};
 
 /* Rosenbrocks classic parabolic valley ("banana") function */
-double hooke_and_Jeeves::f(double x[VARS], int n)
+double hooke_and_Jeeves::f(double *x, int VARS,  int n)
 {
 	double	   a, b, c;
 	funevals++;
@@ -18,23 +18,23 @@ double hooke_and_Jeeves::f(double x[VARS], int n)
 }
 
 /* given a point, look for a better one nearby, one coord at a time */
-double hooke_and_Jeeves::best_nearby(double delta[VARS], double point[VARS], double prevbest, int nvars)
+double hooke_and_Jeeves::best_nearby(double *delta, int VARS, double *point, double prevbest, int nvars)
 {
-	double	   z[VARS];
-	double	   minf, ftmp;
-	int		   i;
+	double *z=new double[VARS];
+	double minf, ftmp;
+	int i;
 	minf = prevbest;
 	for (i = 0; i < nvars; i++)
 		z[i] = point[i];
 	for (i = 0; i < nvars; i++) {
 		z[i] = point[i] + delta[i];
-		ftmp = f(z, nvars);
+		ftmp = f(z, VARS, nvars);
 		if (ftmp < minf)
 			minf = ftmp;
 		else {
 			delta[i] = 0.0 - delta[i];
 			z[i] = point[i] + delta[i];
-			ftmp = f(z, nvars);
+			ftmp = f(z, VARS, nvars);
 			if (ftmp < minf)
 				minf = ftmp;
 			else
@@ -43,17 +43,18 @@ double hooke_and_Jeeves::best_nearby(double delta[VARS], double point[VARS], dou
 	}
 	for (i = 0; i < nvars; i++)
 		point[i] = z[i];
+	delete[] z;
 	return (minf);
 }
 
-
-int hooke_and_Jeeves::hooke(int nvars, double startpt[VARS], double endpt[VARS], double rho, double epsilon, int itermax)
+int hooke_and_Jeeves::hooke(int nvars, double *startpt, int VARS, double *endpt, double rho, double epsilon, int itermax)
 {
-	double	   delta[VARS];
-	double	   newf, fbefore, steplength, tmp;
-	double	   xbefore[VARS], newx[VARS];
-	int		   i, j, keep;
-	int		   iters, iadj;
+	double *delta = new double[VARS];
+	double newf, fbefore, steplength, tmp;
+	double *xbefore = new double[VARS];
+	double *newx=new double[VARS];
+	int i, j, keep;
+	int iters, iadj;
 	for (i = 0; i < nvars; i++) {
 		newx[i] = xbefore[i] = startpt[i];
 		delta[i] = fabs(startpt[i] * rho);
@@ -63,7 +64,7 @@ int hooke_and_Jeeves::hooke(int nvars, double startpt[VARS], double endpt[VARS],
 	iadj = 0;
 	steplength = rho;
 	iters = 0;
-	fbefore = f(newx, nvars);
+	fbefore = f(newx, VARS, nvars);
 	newf = fbefore;
 	while ((iters < itermax) && (steplength > epsilon)) {
 		iters++;
@@ -75,7 +76,7 @@ int hooke_and_Jeeves::hooke(int nvars, double startpt[VARS], double endpt[VARS],
 		for (i = 0; i < nvars; i++) {
 			newx[i] = xbefore[i];
 		}
-		newf = best_nearby(delta, newx, fbefore, nvars);
+		newf = best_nearby(delta, VARS, newx, fbefore, nvars);
 		/* if we made some improvements, pursue that direction */
 		keep = 1;
 		while ((newf < fbefore) && (keep == 1)) {
@@ -92,7 +93,7 @@ int hooke_and_Jeeves::hooke(int nvars, double startpt[VARS], double endpt[VARS],
 				newx[i] = newx[i] + newx[i] - tmp;
 			}
 			fbefore = newf;
-			newf = best_nearby(delta, newx, fbefore, nvars);
+			newf = best_nearby(delta, VARS, newx, fbefore, nvars);
 			/* if the further (optimistic) move was bad.... */
 			if (newf >= fbefore)
 				break;
@@ -119,5 +120,8 @@ int hooke_and_Jeeves::hooke(int nvars, double startpt[VARS], double endpt[VARS],
 	}
 	for (i = 0; i < nvars; i++)
 		endpt[i] = xbefore[i];
+	delete[] delta;
+	delete[] xbefore;
+	delete[] newx;
 	return (iters);
 }

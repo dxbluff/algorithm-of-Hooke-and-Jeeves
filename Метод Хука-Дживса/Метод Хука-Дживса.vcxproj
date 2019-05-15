@@ -127,9 +127,6 @@
     <ClCompile Include="hooke_and_Jeeves.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="description.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="hooke_and_Jeeves.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
